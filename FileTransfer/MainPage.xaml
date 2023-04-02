@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FileClient.MainPage"
+             Title=""
+             Shell.NavBarIsVisible="False"
+             >
+
+    <ScrollView >
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,5,30,5"
+            VerticalOptions="Start"
+            x:Name="MainLayout"
+            >
+            <Button Text="Create Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End"></Button>
+            <Label x:Name="Header" Text="File Client" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Entry x:Name="ServerIPAdress" Placeholder="IP adress" ClassId="Server" IsVisible="False"  IsReadOnly="True"></Entry>
+            <Entry x:Name="ServerPort" Placeholder="Port" ClassId="Server" IsVisible="False"  IsReadOnly="True"></Entry>
+            <ListView x:Name="ServerLogView" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Label Text="{Binding Message}" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Label Text="IP adresa" ClassId="Client" ></Label>
+            <Entry x:Name="IPAdress" Placeholder="IP adress" ClassId="Client" ></Entry>
+            <Label Text="Port" ClassId="Client"></Label>
+            <Entry x:Name="Port" Placeholder="Port" ClassId="Client"></Entry>
+            <Button
+                x:Name="SelectBtn"
+                Text="Select files"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="SelectFilesBtn_Click"
+                HorizontalOptions="Start" 
+                ClassId="Client"/>
+            <ListView x:Name="FileListView" ClassId="Client" ItemsSource="{Binding FilesList}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Label Text="{Binding FileName}" />
+                                <Label Text="{Binding FileSize}" HorizontalOptions="End"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button
+                x:Name="SendBtn"
+                Text="Send files"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="SendBtn_Click"
+                HorizontalOptions="Center" ClassId="Client"
+                />
+            
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
