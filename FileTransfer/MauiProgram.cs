@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
-namespace FileClient;
+namespace FileTransfer;
 
 public static class MauiProgram
 {

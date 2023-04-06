@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace FileClient;
+namespace FileTransfer;
 
 [Application]
 public class MainApplication : MauiApplication

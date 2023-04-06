@@ -1,4 +1,4 @@
-﻿namespace FileClient;
+﻿namespace FileTransfer;
 
 public partial class AppShell : Shell
 {

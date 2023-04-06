@@ -6,16 +6,16 @@
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
-		<RootNamespace>FileClient</RootNamespace>
+		<RootNamespace>FileTransfer</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>FileClient</ApplicationTitle>
+		<ApplicationTitle>FileTransfer</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.fileclient</ApplicationId>
+		<ApplicationId>me.Tobis.FileTransfer</ApplicationId>
 		<ApplicationIdGuid>8a75cbc6-3aad-465a-a979-5f04014a888f</ApplicationIdGuid>
 
 		<!-- Versions -->

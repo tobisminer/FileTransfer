@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace FileClient;
+namespace FileTransfer;
 
 public class Program
 {

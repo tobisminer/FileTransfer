@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FileClient.MainPage"
+             x:Class="FileTransfer.MainPage"
              Title=""
              Shell.NavBarIsVisible="False"
              >
@@ -13,9 +13,11 @@
             VerticalOptions="Start"
             x:Name="MainLayout"
             >
-            <Button Text="Create Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End"></Button>
+            <Button x:Name="SwitchBtn" Text="Switch to Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End"></Button>
             <Label x:Name="Header" Text="File Client" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
-            <Entry x:Name="ServerIPAdress" Placeholder="IP adress" ClassId="Server" IsVisible="False"  IsReadOnly="True"></Entry>
+            <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
+            <Entry x:Name="ServerIpAddress" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
+            <Label Text="Port of this device" ClassId="Server" IsVisible="False"></Label>
             <Entry x:Name="ServerPort" Placeholder="Port" ClassId="Server" IsVisible="False"  IsReadOnly="True"></Entry>
             <ListView x:Name="ServerLogView" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
                 <ListView.ItemTemplate>
@@ -29,9 +31,10 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Label Text="IP adresa" ClassId="Client" ></Label>
-            <Entry x:Name="IPAdress" Placeholder="IP adress" ClassId="Client" ></Entry>
-            <Label Text="Port" ClassId="Client"></Label>
+
+            <Label Text="IP address to which files are to be sent" ClassId="Client" ></Label>
+            <Entry x:Name="IpAddress" Placeholder="IP address" ClassId="Client" ></Entry>
+            <Label Text="Port of the server (default 23000)" ClassId="Client"></Label>
             <Entry x:Name="Port" Placeholder="Port" ClassId="Client"></Entry>
             <Button
                 x:Name="SelectBtn"
@@ -40,26 +43,21 @@
                 Clicked="SelectFilesBtn_Click"
                 HorizontalOptions="Start" 
                 ClassId="Client"/>
-            <ListView x:Name="FileListView" ClassId="Client" ItemsSource="{Binding FilesList}">
+            <ListView x:Name="FileListView"
+                      ClassId="Client" ItemsSource="{Binding FilesList}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <Grid>
                                 <Label Text="{Binding FileName}" />
-                                <Label Text="{Binding FileSize}" HorizontalOptions="End"/>
+                                <Label Text="{Binding FileSize}" HorizontalOptions="End" />
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button
-                x:Name="SendBtn"
-                Text="Send files"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="SendBtn_Click"
-                HorizontalOptions="Center" ClassId="Client"
-                />
-            
+            <Button x:Name="SendBtn" Text="Send files" SemanticProperties.Hint="Counts the number of times you click"
+                    Clicked="SendBtn_Click" HorizontalOptions="Center" ClassId="Client" />
 
 
         </VerticalStackLayout>
