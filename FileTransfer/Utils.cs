@@ -1,11 +1,6 @@
-﻿using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using CommunityToolkit.Maui.Alerts;
-using System.Linq;
+﻿using CommunityToolkit.Maui.Alerts;
 using System.Net;
 using System.Net.Sockets;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 #if ANDROID
 using Java.Net;
 using Java.Util;
@@ -15,8 +10,7 @@ namespace FileTransfer;
 
 internal class Utils
 {
-    private static CancellationTokenSource cancellationTokenSource = new();
-    public static CancellationToken cancellationToken = cancellationTokenSource.Token;
+    public static CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB" };
 
@@ -31,7 +25,7 @@ internal class Utils
     public static async void MakeToast(string message)
     {
         var toast = Toast.Make(message);
-        await toast.Show(cancellationToken);
+        await toast.Show(CancellationToken);
     }
 #if ANDROID
     public static string GetLocalIpAddressForAndroid()

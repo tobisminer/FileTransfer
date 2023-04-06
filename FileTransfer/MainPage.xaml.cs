@@ -1,10 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Maui.Storage;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using CommunityToolkit.Maui.Storage;
 
 namespace FileTransfer;
 
@@ -125,9 +124,7 @@ public partial class MainPage : ContentPage
     {
         Utils.MakeToast(e.Message);
     }
-
     
-
     private void ServerCreateBtn_Click(object sender, EventArgs e)
     {
         MainLayout.Children.ToList().ForEach(x =>
@@ -139,7 +136,7 @@ public partial class MainPage : ContentPage
                 "Server" => !test.IsVisible,
                 _ => test.IsVisible
             };
-            
+
         });
         InvalidateMeasure();
         if (Header.Text == "File Client")
@@ -196,9 +193,9 @@ public partial class MainPage : ContentPage
                 var bufferCount = Convert.ToInt32(Math.Ceiling(fileSize / (double)bufferSize));
                 var filename = headers["Filename"];
                 CreateNewLog($"File name: {filename}");
-                CreateNewLog($"File size: {Utils.SizeSuffix(fileSize,3)} bytes");
+                CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)} bytes");
 
-                var fs = new MemoryStream(); 
+                var fs = new MemoryStream();
                 while (fileSize > 0)
                 {
                     var buffer = new byte[bufferSize];
@@ -208,7 +205,7 @@ public partial class MainPage : ContentPage
                 }
 
 
-                var result = await FileSaver.SaveAsync(filename, fs, Utils.cancellationToken);
+                var result = await FileSaver.SaveAsync(filename, fs, Utils.CancellationToken);
                 fs.Close();
                 socket.Close();
                 watch.Stop();
