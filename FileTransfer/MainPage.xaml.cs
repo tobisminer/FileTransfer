@@ -186,12 +186,12 @@ public partial class MainPage : ContentPage
                 var bufferCount = Convert.ToInt32(Math.Ceiling(fileSize / (double)bufferSize));
                 var filename = headers["Filename"];
                 CreateNewLog($"File name: {filename}");
-                CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)} bytes");
+                CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
 
                 
                 
 
-                var fs = new MemoryStream(); //TODO: possible memory leak
+                var fs = new MemoryStream(); //TODO: Fix big memory allocation
 
                 while (fileSize > 0)
                 {
