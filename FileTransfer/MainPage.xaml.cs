@@ -30,7 +30,7 @@ public partial class MainPage : ContentPage
         InitializeComponent();
 
         IpAddress.Text = Preferences.Default.Get("IPAddress", "");
-        Port.Text = Preferences.Default.Get("Port", 0).ToString();
+        SetTheme(true);
     }
 
     private async void SelectFilesBtn_Click(object sender, EventArgs e)
@@ -60,21 +60,14 @@ public partial class MainPage : ContentPage
     private async void SendBtn_Click(object sender, EventArgs e)
     {
         var ip = IpAddress.Text;
+        var port = 23000;
 
         if (!Utils.ValidateIPv4(ip))
         {
             Utils.MakeToast("IP address is invalid");
             return;
         }
-
-        if (!int.TryParse(Port.Text, out var port) || port is < 0 or > 65535)
-        {
-            Utils.MakeToast("Port is invalid number");
-            return;
-        }
-
         Preferences.Default.Set("IPAddress", ip);
-        Preferences.Default.Set("Port", port);
         foreach (var file in _selectedFiles.Where(file => file != null))
         {
             var stream = await file.OpenReadAsync();
@@ -167,7 +160,6 @@ public partial class MainPage : ContentPage
 #endif
 
         ServerIpAddress.Text = ipAddress;
-        ServerPort.Text = "23000";
         _isServerRunning = true;
         _listener = new TcpListener(IPAddress.Parse(ipAddress), 23000);
         _listener.Start();
@@ -230,5 +222,30 @@ public partial class MainPage : ContentPage
     {
         Logs.Add(new Log { Message = message });
         ServerLogView.ItemsSource = Logs;
+    }
+
+    private void SetTheme(bool startUp = false)
+    {
+        var isDarkMode = Preferences.Default.Get("DarkMode", true);
+        if (!startUp)
+        {
+            isDarkMode = !isDarkMode;
+        }
+        if (isDarkMode)
+        {
+            ThemeBtn.Source = "moon.png";
+            Preferences.Default.Set("DarkMode", true);
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+        else
+        {
+            ThemeBtn.Source = "sun.png";
+            Preferences.Default.Set("DarkMode", false);
+            Application.Current.UserAppTheme = AppTheme.Dark;
+        }
+    }
+    private void ThemeBtn_OnClicked(object sender, EventArgs e)
+    {
+        SetTheme();
     }
 }

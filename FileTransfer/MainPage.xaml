@@ -10,15 +10,31 @@
         <VerticalStackLayout
             Spacing="25"
             Padding="30,5,30,5"
-            VerticalOptions="Start"
             x:Name="MainLayout"
             >
-            <Button x:Name="SwitchBtn" Text="Switch to Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End"></Button>
+            <Grid>
+                <ImageButton x:Name="ThemeBtn" Source="sun.png" Clicked="ThemeBtn_OnClicked" HeightRequest="24" WidthRequest="24" HorizontalOptions="End" Grid.Column="1"></ImageButton>
+                <Button x:Name="SwitchBtn" Text="Switch to Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End" Grid.Column="2"></Button>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
             <Label x:Name="Header" Text="File Client" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label ClassId="Server" IsVisible="False" FontAutoScalingEnabled="False">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Use this if you want to "/>
+                        <Span Text="receive " FontAttributes="Bold" />
+                        <Span Text="file from other device!"/>
+                    </FormattedString>
+                </Label.FormattedText>
+
+            </Label>
             <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
             <Entry x:Name="ServerIpAddress" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
-            <Label Text="Port of this device" ClassId="Server" IsVisible="False"></Label>
-            <Entry x:Name="ServerPort" Placeholder="Port" ClassId="Server" IsVisible="False"  IsReadOnly="True"></Entry>
             <ListView x:Name="ServerLogView" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -34,8 +50,6 @@
 
             <Label Text="IP address to which files are to be sent" ClassId="Client" ></Label>
             <Entry x:Name="IpAddress" Placeholder="IP address" ClassId="Client" ></Entry>
-            <Label Text="Port of the server (default 23000)" ClassId="Client"></Label>
-            <Entry x:Name="Port" Placeholder="Port" ClassId="Client"></Entry>
             <Button
                 x:Name="SelectBtn"
                 Text="Select files"
