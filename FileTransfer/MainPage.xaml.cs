@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System;
 
 namespace FileTransfer;
 
@@ -187,16 +188,18 @@ public partial class MainPage : ContentPage
                 CreateNewLog($"File name: {filename}");
                 CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)} bytes");
 
-                var fs = new MemoryStream();
+                
+                
+
+                var fs = new MemoryStream(); //TODO: possible memory leak
+
                 while (fileSize > 0)
                 {
                     var buffer = new byte[bufferSize];
                     var size = await socket.ReceiveAsync(buffer, SocketFlags.None);
-                    await fs.WriteAsync(buffer, 0, size);
+                    await fs.WriteAsync(buffer.AsMemory(0, size));
                     fileSize -= size;
                 }
-
-
                 var result = await FileSaver.SaveAsync(filename, fs, Utils.CancellationToken);
                 fs.Close();
                 socket.Close();
