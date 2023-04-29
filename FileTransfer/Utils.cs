@@ -8,8 +8,19 @@ using Java.Util;
 
 namespace FileTransfer;
 
-internal class Utils
+public static class Utils
 {
+    public class Files
+    {
+        public string FileName { get; set; }
+        public string FileSize { get; set; }
+    }
+
+    public class Log
+    {
+        public string Message { get; set; }
+    }
+
     public static CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB" };
@@ -60,4 +71,19 @@ internal class Utils
         var splitValues = ipString.Split('.');
         return splitValues.Length == 4 && splitValues.All(r => byte.TryParse(r, out _));
     }
+    public static string GetIPAdress()
+    {
+#if WINDOWS
+        return Utils.GetLocalIpAddress().ToString();
+#endif
+#if ANDROID
+        return Utils.GetLocalIpAddressForAndroid();
+#endif
+        return null;
+    }
+    public static void HandleException(Exception e)
+    {
+        MakeToast(e.Message);
+    }
+
 }

@@ -1,1 +1,46 @@
-<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg enable-background="new 0 0 512 512" height="512px" id="Layer_1" version="1.1" viewBox="0 0 512 512" width="512px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M349.852,343.15c-49.875,49.916-131.083,49.916-181,0c-49.916-49.918-49.916-131.125,0-181.021  c13.209-13.187,29.312-23.25,47.832-29.812c5.834-2.042,12.293-0.562,16.625,3.792c4.376,4.375,5.855,10.833,3.793,16.625  c-12.542,35.375-4,73.666,22.25,99.917c26.209,26.228,64.5,34.75,99.916,22.25c5.792-2.062,12.271-0.582,16.625,3.793  c4.376,4.332,5.834,10.812,3.771,16.625C373.143,313.838,363.06,329.941,349.852,343.15z M191.477,184.754  c-37.438,37.438-37.438,98.354,0,135.771c40,40.021,108.125,36.416,143-8.168c-35.959,2.25-71.375-10.729-97.75-37.084  c-26.375-26.354-39.333-61.771-37.084-97.729C196.769,179.796,194.039,182.192,191.477,184.754z" fill="#1D1D1B"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg9"
+   width="1599.36"
+   height="1599.36"
+   viewBox="0 0 1599.36 1599.36"
+   sodipodi:docname="v793-ning-10.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.25197579"
+     inkscape:cx="752.05637"
+     inkscape:cy="801.66431"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1672"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g15" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g15">
+    <path
+       style="fill:#ffc747;stroke:none;stroke-width:1.41002"
+       d="m 1169.1003,3.9338496 c 20.8683,39.6270874 42.3852,78.0754044 58.9388,119.8513504 45.8537,115.7595 66.4681,242.40289 57.9658,366.60415 -7.2476,105.91053 -34.5878,209.98097 -79.9339,305.97339 -142.9333,302.61766 -464.83849,495.36676 -798.37921,480.75906 -97.79868,-4.2865 -195.89067,-26.0853 -286.23321,-63.9865 -37.627705,-15.7922 -72.559439,-35.4337 -108.571245,-54.3985 15.865499,36.7732 46.337352,72.3761 71.798007,102.9312 67.057558,80.4837 147.768288,150.0962 239.815528,200.6593 91.9302,50.4786 191.9384,85.2496 296.10332,99.2791 286.97068,38.6486 582.02641,-73.5181 766.45651,-298.5284 68.6537,-83.769 119.8091,-179.1284 153.3393,-282.00315 91.51,-280.74961 19.1903,-598.68143 -176.4777,-817.80921 C 1322.7922,117.20325 1276.1348,75.016984 1225.501,39.579051 1208.4539,27.648907 1189.038,10.288792 1169.1003,3.9338496 Z"
+       id="path177" />
+  </g>
+</svg>

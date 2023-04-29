@@ -5,34 +5,52 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System;
+using System.IO.MemoryMappedFiles;
 
 namespace FileTransfer;
 
 public partial class MainPage : ContentPage
 {
-    public class Files
-    {
-        public string FileName { get; set; }
-        public string FileSize { get; set; }
-    }
-
-    public class Log
-    {
-        public string Message { get; set; }
-    }
-
-    public ObservableCollection<Files> FilesList { get; } = new();
-    public ObservableCollection<Log> Logs { get; } = new();
+    public ObservableCollection<Utils.Files> FilesList { get; } = new();
+    public ObservableCollection<Utils.Log> Logs { get; } = new();
 
     private List<FileResult> _selectedFiles = new();
 
     public MainPage()
     {
         InitializeComponent();
-
+        LoadDefault();
+    }
+    private void LoadDefault()
+    {
         IpAddress.Text = Preferences.Default.Get("IPAddress", "");
         SetTheme(true);
     }
+    private void ThemeBtn_OnClicked(object sender, EventArgs e)
+    {
+        SetTheme();
+    }
+    private void SetTheme(bool startUp = false)
+    {
+        var isDarkMode = Preferences.Default.Get("DarkMode", true);
+        if (!startUp)
+        {
+            isDarkMode = !isDarkMode;
+        }
+        if (isDarkMode)
+        {
+            ThemeBtn.Source = "moon.png";
+            Preferences.Default.Set("DarkMode", true);
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+        else
+        {
+            ThemeBtn.Source = "sun.png";
+            Preferences.Default.Set("DarkMode", false);
+            Application.Current.UserAppTheme = AppTheme.Dark;
+        }
+    }
+    #region Client
 
     private async void SelectFilesBtn_Click(object sender, EventArgs e)
     {
@@ -45,7 +63,7 @@ public partial class MainPage : ContentPage
             foreach (var file in _selectedFiles)
             {
                 var stream = await file.OpenReadAsync();
-                FilesList.Add(new Files { FileName = file.FileName, FileSize = Utils.SizeSuffix(stream.Length) });
+                FilesList.Add(new Utils.Files { FileName = file.FileName, FileSize = Utils.SizeSuffix(stream.Length) });
                 stream.Close();
                 await stream.DisposeAsync();
             }
@@ -54,14 +72,14 @@ public partial class MainPage : ContentPage
         }
         catch (Exception exception)
         {
-            HandleException(exception);
+            Utils.HandleException(exception);
         }
     }
 
     private async void SendBtn_Click(object sender, EventArgs e)
     {
         var ip = IpAddress.Text;
-        var port = 23000;
+        const int port = 23000;
 
         if (!Utils.ValidateIPv4(ip))
         {
@@ -110,15 +128,15 @@ public partial class MainPage : ContentPage
         }
         catch (Exception e)
         {
-            HandleException(e);
+            Utils.HandleException(e);
         }
     }
 
-    public void HandleException(Exception e)
-    {
-        Utils.MakeToast(e.Message);
-    }
-    
+    #endregion
+
+    #region Server
+    private TcpListener _listener;
+    private bool _isServerRunning;
     private void ServerCreateBtn_Click(object sender, EventArgs e)
     {
         MainLayout.Children.ToList().ForEach(x =>
@@ -147,19 +165,9 @@ public partial class MainPage : ContentPage
             StopServer();
         }
     }
-
-    private TcpListener _listener;
-    private bool _isServerRunning;
     public async void CreateServer()
     {
-        string ipAddress = null;
-#if WINDOWS
-        ipAddress = Utils.GetLocalIpAddress().ToString();
-#endif
-#if ANDROID
-        ipAddress = Utils.GetLocalIpAddressForAndroid();
-#endif
-
+        var ipAddress = Utils.GetIPAdress();
         ServerIpAddress.Text = ipAddress;
         _isServerRunning = true;
         _listener = new TcpListener(IPAddress.Parse(ipAddress), 23000);
@@ -183,16 +191,10 @@ public partial class MainPage : ContentPage
                     s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
 
                 var fileSize = Convert.ToInt32(headers["Content-length"]);
-                var bufferCount = Convert.ToInt32(Math.Ceiling(fileSize / (double)bufferSize));
                 var filename = headers["Filename"];
                 CreateNewLog($"File name: {filename}");
                 CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
-
-                
-                
-
-                var fs = new MemoryStream(); //TODO: Fix big memory allocation
-
+                var fs = new MemoryStream(); //TODO: Fix big memory allocation*/
                 while (fileSize > 0)
                 {
                     var buffer = new byte[bufferSize];
@@ -211,7 +213,7 @@ public partial class MainPage : ContentPage
             catch (Exception e)
             {
                 _listener.Stop();
-                HandleException(e);
+                Utils.HandleException(e);
             }
     }
 
@@ -221,34 +223,15 @@ public partial class MainPage : ContentPage
         _listener.Server.Close();
         _isServerRunning = false;
     }
+
+    #endregion
+
     public void CreateNewLog(string message)
     {
-        Logs.Add(new Log { Message = message });
+        Logs.Add(new Utils.Log { Message = message });
         ServerLogView.ItemsSource = Logs;
     }
 
-    private void SetTheme(bool startUp = false)
-    {
-        var isDarkMode = Preferences.Default.Get("DarkMode", true);
-        if (!startUp)
-        {
-            isDarkMode = !isDarkMode;
-        }
-        if (isDarkMode)
-        {
-            ThemeBtn.Source = "moon.png";
-            Preferences.Default.Set("DarkMode", true);
-            Application.Current.UserAppTheme = AppTheme.Light;
-        }
-        else
-        {
-            ThemeBtn.Source = "sun.png";
-            Preferences.Default.Set("DarkMode", false);
-            Application.Current.UserAppTheme = AppTheme.Dark;
-        }
-    }
-    private void ThemeBtn_OnClicked(object sender, EventArgs e)
-    {
-        SetTheme();
-    }
+   
+    
 }
