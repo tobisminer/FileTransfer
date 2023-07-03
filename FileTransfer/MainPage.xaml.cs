@@ -64,7 +64,6 @@ public partial class MainPage : ContentPage
             {
                 var stream = await file.OpenReadAsync();
                 FilesList.Add(new Utils.Files { FileName = file.FileName, FileSize = Utils.SizeSuffix(stream.Length) });
-                stream.Close();
                 await stream.DisposeAsync();
             }
 
@@ -90,11 +89,11 @@ public partial class MainPage : ContentPage
         foreach (var file in _selectedFiles.Where(file => file != null))
         {
             var stream = await file.OpenReadAsync();
-            SendFile(stream, file.FileName, ip, port);
+            await SendFile(stream, file.FileName, ip, port);
         }
     }
-
-    private async void SendFile(Stream stream, string fileName, string IPadress, int Port)
+  
+    private async Task SendFile(Stream stream, string fileName, string IPadress, int Port)
     {
         try
         {
