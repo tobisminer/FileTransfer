@@ -14,6 +14,7 @@ public static class Utils
     {
         public string FileName { get; set; }
         public string FileSize { get; set; }
+        public string Progress { get; set; }
     }
 
     public class Log
@@ -25,12 +26,12 @@ public static class Utils
 
     private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB" };
 
-    public static string SizeSuffix(long value, int decimalPlaces = 0)
+    public static string SizeSuffix(long value, int decimalPlaces = 0, bool addSuffix = true)
     {
         if (value < 0) throw new ArgumentException("Bytes should not be negative", "value");
         var mag = (int)Math.Max(0, Math.Log(value, 1024));
         var adjustedSize = Math.Round(value / Math.Pow(1024, mag), decimalPlaces);
-        return $"{adjustedSize} {SizeSuffixes[mag]}";
+        return $"{adjustedSize} " + (addSuffix ? SizeSuffixes[mag] : "");
     }
 
     public static async void MakeToast(string message)
