@@ -135,6 +135,8 @@ public partial class MainPage : ContentPage
 
     #region Server
     private TcpListener _listener;
+    private string defaultDirectory;
+
     private bool _isServerRunning;
     private void ServerCreateBtn_Click(object sender, EventArgs e)
     {
@@ -167,6 +169,7 @@ public partial class MainPage : ContentPage
     public async void CreateServer()
     {
         var ipAddress = Utils.GetIPAdress();
+        
         ServerIpAddress.Text = ipAddress;
         _isServerRunning = true;
         _listener = new TcpListener(IPAddress.Parse(ipAddress), 23000);
@@ -193,20 +196,35 @@ public partial class MainPage : ContentPage
                 var filename = headers["Filename"];
                 CreateNewLog($"File name: {filename}");
                 CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
-                var fs = new MemoryStream(); //TODO: Fix big memory allocation*/
+                var memoryStream = new MemoryStream(); //TODO: Fix big memory allocation*/
                 while (fileSize > 0)
                 {
                     var buffer = new byte[bufferSize];
                     var size = await socket.ReceiveAsync(buffer, SocketFlags.None);
-                    await fs.WriteAsync(buffer.AsMemory(0, size));
+                    await memoryStream.WriteAsync(buffer.AsMemory(0, size));
                     fileSize -= size;
                 }
-                var result = await FileSaver.SaveAsync(filename, fs, Utils.CancellationToken);
-                fs.Close();
+                string resultPath;
+                if (defaultDirectory is null or "")
+                {
+                    var result = await FileSaver.SaveAsync(filename, memoryStream, Utils.CancellationToken);
+                    resultPath = result.FilePath;
+                }
+                else
+                {
+                    var targetFile = Path.Combine(defaultDirectory, filename);
+                    await using var fileStream = new FileStream(targetFile, FileMode.Create);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    await memoryStream.CopyToAsync(fileStream);
+
+                    resultPath = targetFile;
+                }
+                
+                memoryStream.Close();
                 socket.Close();
                 watch.Stop();
                 CreateNewLog($"File transferred in {watch.ElapsedMilliseconds} ms");
-                CreateNewLog($"File saved to {result.FilePath}");
+                CreateNewLog($"File saved to {resultPath}");
                 CreateNewLog("---------File transfer done!---------");
             }
             catch (Exception e)
@@ -214,6 +232,14 @@ public partial class MainPage : ContentPage
                 _listener.Stop();
                 Utils.HandleException(e);
             }
+    }
+    private async void DirectoryBtn_OnClicked(object sender, EventArgs e)
+    {
+        var folder = await FolderPicker.Default.PickAsync(Utils.CancellationToken);
+        if (folder.Folder == null) return;
+        var path = folder.Folder.Path;
+        DefaultDirectory.Text = path; 
+        defaultDirectory = path;
     }
 
     public void StopServer()
@@ -231,6 +257,6 @@ public partial class MainPage : ContentPage
         ServerLogView.ItemsSource = Logs;
     }
 
+
    
-    
 }
