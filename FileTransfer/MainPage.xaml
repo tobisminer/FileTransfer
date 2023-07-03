@@ -22,11 +22,11 @@
                 </Grid.ColumnDefinitions>
             </Grid>
 
-            <Label x:Name="Header" Text="File Client" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
-            <Label ClassId="Server" IsVisible="False" FontAutoScalingEnabled="False">
+            <Label x:Name="Header" Text="File Client" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label ClassId="Server" IsVisible="False" FontSize="17" FontAutoScalingEnabled="False">
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="Use this if you want to "/>
+                        <Span Text="Use this if you want to " FontSize="17"/>
                         <Span Text="receive " FontAttributes="Bold" />
                         <Span Text="file from other device!"/>
                     </FormattedString>
@@ -35,6 +35,17 @@
             </Label>
             <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
             <Entry x:Name="ServerIpAddress" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
+            <Label Text="Default save directory (leave blank if you want to save each file elsewhere)" ClassId="Server" IsVisible="False" ></Label>
+            <Entry x:Name="DefaultDirectory" Placeholder="Save directory" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
+            <Button
+            x:Name="DirectoryBtn"
+            Text="Select directory"
+            Clicked="DirectoryBtn_OnClicked"
+            HorizontalOptions="Start" 
+            ClassId="Server"
+            IsVisible="False"
+            />
+            <Label Text="Server log:" ClassId="Server" IsVisible="False" ></Label>
             <ListView x:Name="ServerLogView" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -48,7 +59,17 @@
             </ListView>
 
 
-            <Label Text="IP address to which files are to be sent" ClassId="Client" ></Label>
+
+            <Label FontAutoScalingEnabled="False" ClassId="Client">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="IP address to "/>
+                        <Span Text="send " FontAttributes="Bold" />
+                        <Span Text="files to!"/>
+                    </FormattedString>
+                </Label.FormattedText>
+
+            </Label>
             <Entry x:Name="IpAddress" Placeholder="IP address" ClassId="Client" ></Entry>
             <Button
                 x:Name="SelectBtn"
@@ -72,7 +93,6 @@
             </ListView>
             <Button x:Name="SendBtn" Text="Send files" SemanticProperties.Hint="Counts the number of times you click"
                     Clicked="SendBtn_Click" HorizontalOptions="Center" ClassId="Client" />
-
 
         </VerticalStackLayout>
     </ScrollView>
