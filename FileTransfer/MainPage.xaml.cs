@@ -220,8 +220,10 @@ public partial class MainPage : ContentPage
                     resultPath = targetFile;
                 }
                 
+                await memoryStream.DisposeAsync();
                 memoryStream.Close();
                 socket.Close();
+                socket.Dispose();
                 watch.Stop();
                 CreateNewLog($"File transferred in {watch.ElapsedMilliseconds} ms");
                 CreateNewLog($"File saved to {resultPath}");
