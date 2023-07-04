@@ -16,6 +16,9 @@ public partial class MainPage : ContentPage
 
     private List<FileResult> _selectedFiles = new();
 
+    private Server server;
+    private Client client;
+
     public MainPage()
     {
         InitializeComponent();
@@ -25,6 +28,9 @@ public partial class MainPage : ContentPage
     {
         IpAddress.Text = Preferences.Default.Get("IPAddress", "");
         SetTheme(true);
+
+        server = new Server(this);
+        client = new Client(this);
     }
     private void ThemeBtn_OnClicked(object sender, EventArgs e)
     {
@@ -57,8 +63,11 @@ public partial class MainPage : ContentPage
         try
         {
             var result = await FilePicker.Default.PickMultipleAsync();
-            var fileResults = result.ToList();
-            _selectedFiles = fileResults.ToList();
+            _selectedFiles = result.ToList();
+            foreach (var file in _selectedFiles.Where(file => file == null))
+            {
+                _selectedFiles.Remove(file);
+            }
             FilesList.Clear();
             foreach (var file in _selectedFiles)
             {
@@ -86,59 +95,22 @@ public partial class MainPage : ContentPage
             return;
         }
         Preferences.Default.Set("IPAddress", ip);
-        foreach (var file in _selectedFiles.Where(file => file != null))
+        
+        foreach (var file in _selectedFiles)
         {
             var stream = await file.OpenReadAsync();
-            await SendFile(stream, file.FileName, ip, port);
+            await client.SendFile(stream, file.FileName, ip, port);
         }
     }
-  
-    private async Task SendFile(Stream stream, string fileName, string IPadress, int Port)
-    {
-        try
-        {
-            const int bufferSize = 1024;
 
-            var bufferCount = Convert.ToInt32(Math.Ceiling(stream.Length / (double)bufferSize));
-
-            var tcpClient = new TcpClient(IPadress, Port)
-            {
-                SendTimeout = 60000,
-                ReceiveTimeout = 60000
-            };
-            var client = tcpClient.Client;
-            var headerStr = "Content-length:" + stream.Length + "\r\nFilename:" + fileName + "\r\n";
-            var header = new byte[bufferSize];
-            Array.Copy(Encoding.UTF8.GetBytes(headerStr), header, Encoding.UTF8.GetBytes(headerStr).Length);
-
-            await client.SendAsync(header);
-            for (var i = 0; i < bufferCount; i++)
-            {
-                var buffer = new byte[bufferSize];
-                var size = await stream.ReadAsync(buffer.AsMemory(0, bufferSize));
-
-                await client.SendAsync(buffer);
-            }
-
-            client.Close();
-            stream.Close();
-
-            Utils.MakeToast("File successfully send!");
-        }
-        catch (Exception e)
-        {
-            Utils.HandleException(e);
-        }
-    }
 
     #endregion
 
     #region Server
-    private TcpListener _listener;
-    private string defaultDirectory;
+    
 
-    private bool _isServerRunning;
-    private void ServerCreateBtn_Click(object sender, EventArgs e)
+   
+    private void SwitchBtn_Click(object sender, EventArgs e)
     {
         MainLayout.Children.ToList().ForEach(x =>
         {
@@ -152,120 +124,35 @@ public partial class MainPage : ContentPage
 
         });
         InvalidateMeasure();
-        if (Header.Text == "File Client")
+        if (Header.Text == "File Sender")
         {
-            Header.Text = "File Server";
-            SwitchBtn.Text = "Switch to Client";
-            CreateServer();
+            Header.Text = "File Receiver";
+            SwitchBtn.Text = "Switch to Sender";
+            server.CreateServer();
         }
 
         else
         {
-            Header.Text = "File Client";
-            SwitchBtn.Text = "Switch to Server";
-            StopServer();
+            Header.Text = "File Sender";
+            SwitchBtn.Text = "Switch to Receiver";
+            server.StopServer();
         }
     }
-    public async void CreateServer()
-    {
-        var ipAddress = Utils.GetIPAdress();
-        
-        ServerIpAddress.Text = ipAddress;
-        _isServerRunning = true;
-        _listener = new TcpListener(IPAddress.Parse(ipAddress), 23000);
-        _listener.Start();
-        var watch = new Stopwatch();
-        while (_isServerRunning)
-            try
-            {
-                var socket = await _listener.AcceptSocketAsync();
-                watch.Restart();
-                CreateNewLog($"Client connected! With IP {socket.RemoteEndPoint}");
-                ProgressServer.Progress = 0;
-                const int bufferSize = 1024;
-                var header = new byte[bufferSize];
-                await socket.ReceiveAsync(header);
-                var headerStr = Encoding.UTF8.GetString(header);
-                var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
-                var headers = split.Where(
-                    s => s.Contains(':')).ToDictionary(
-                    s => s[..s.IndexOf(":", StringComparison.Ordinal)],
-                    s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
-
-                var fileSize = Convert.ToInt32(headers["Content-length"]);
-                var fileSizeProgress = Convert.ToInt32(headers["Content-length"]);
-                var filename = headers["Filename"];
-                CreateNewLog($"File name: {filename}");
-                CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
-                var memoryStream = new MemoryStream(); //TODO: Fix big memory allocation*/
-
-                var lastProgress = 0D;
-
-                while (fileSize > 0)
-                {
-                    var buffer = new byte[bufferSize];
-                    var size = await socket.ReceiveAsync(buffer, SocketFlags.None);
-                    await memoryStream.WriteAsync(buffer.AsMemory(0, size));
-                    fileSize -= size;
-                    var progress = ((double)(fileSizeProgress - fileSize) / fileSizeProgress);
-                    if (!(progress - lastProgress > 0.05)) continue;
-                    lastProgress = progress;
-                    ProgressServer.Progress = progress;
-
-
-                }
-                string resultPath;
-                if (defaultDirectory is null or "")
-                {
-                    var result = await FileSaver.SaveAsync(filename, memoryStream, Utils.CancellationToken);
-                    resultPath = result.FilePath;
-                }
-                else
-                {
-                    var targetFile = Path.Combine(defaultDirectory, filename);
-                    resultPath = targetFile;
-                    await using var fileStream = new FileStream(targetFile, FileMode.Create);
-                    memoryStream.Seek(0, SeekOrigin.Begin);
-                    await memoryStream.CopyToAsync(fileStream);
-                }
-                
-                await memoryStream.DisposeAsync();
-                memoryStream.Close();
-                socket.Dispose();
-                watch.Stop();
-                CreateNewLog($"File transferred in {watch.ElapsedMilliseconds} ms");
-                CreateNewLog($"File saved to {resultPath}");
-                CreateNewLog("---------File transfer done!---------");
-            }
-            catch (Exception e)
-            {
-                _listener.Stop();
-                Utils.HandleException(e);
-            }
-    }
+    
     private async void DirectoryBtn_OnClicked(object sender, EventArgs e)
     {
         var folder = await FolderPicker.Default.PickAsync(Utils.CancellationToken);
         if (folder.Folder == null) return;
         var path = folder.Folder.Path;
-        DefaultDirectory.Text = path; 
-        defaultDirectory = path;
+        DefaultDirectory.Text = path;
+        server.defaultDirectory = path;
     }
 
-    public void StopServer()
-    {
-        _listener.Stop();
-        _listener.Server.Close();
-        _isServerRunning = false;
-    }
+    
 
     #endregion
 
-    public void CreateNewLog(string message)
-    {
-        Logs.Add(new Utils.Log { Message = message });
-        ServerLogView.ItemsSource = Logs;
-    }
+    
 
 
    
