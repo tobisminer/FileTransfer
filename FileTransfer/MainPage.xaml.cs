@@ -181,7 +181,7 @@ public partial class MainPage : ContentPage
                 var socket = await _listener.AcceptSocketAsync();
                 watch.Restart();
                 CreateNewLog($"Client connected! With IP {socket.RemoteEndPoint}");
-
+                ProgressServer.Progress = 0;
                 const int bufferSize = 1024;
                 var header = new byte[bufferSize];
                 await socket.ReceiveAsync(header);
@@ -193,16 +193,26 @@ public partial class MainPage : ContentPage
                     s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
 
                 var fileSize = Convert.ToInt32(headers["Content-length"]);
+                var fileSizeProgress = Convert.ToInt32(headers["Content-length"]);
                 var filename = headers["Filename"];
                 CreateNewLog($"File name: {filename}");
                 CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
                 var memoryStream = new MemoryStream(); //TODO: Fix big memory allocation*/
+
+                var lastProgress = 0D;
+
                 while (fileSize > 0)
                 {
                     var buffer = new byte[bufferSize];
                     var size = await socket.ReceiveAsync(buffer, SocketFlags.None);
                     await memoryStream.WriteAsync(buffer.AsMemory(0, size));
                     fileSize -= size;
+                    var progress = ((double)(fileSizeProgress - fileSize) / fileSizeProgress);
+                    if (!(progress - lastProgress > 0.05)) continue;
+                    lastProgress = progress;
+                    ProgressServer.Progress = progress;
+
+
                 }
                 string resultPath;
                 if (defaultDirectory is null or "")
@@ -213,16 +223,14 @@ public partial class MainPage : ContentPage
                 else
                 {
                     var targetFile = Path.Combine(defaultDirectory, filename);
+                    resultPath = targetFile;
                     await using var fileStream = new FileStream(targetFile, FileMode.Create);
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     await memoryStream.CopyToAsync(fileStream);
-
-                    resultPath = targetFile;
                 }
                 
                 await memoryStream.DisposeAsync();
                 memoryStream.Close();
-                socket.Close();
                 socket.Dispose();
                 watch.Stop();
                 CreateNewLog($"File transferred in {watch.ElapsedMilliseconds} ms");
