@@ -184,7 +184,7 @@ public partial class MainPage : ContentPage
 
                 const int bufferSize = 1024;
                 var header = new byte[bufferSize];
-                socket.Receive(header);
+                await socket.ReceiveAsync(header);
                 var headerStr = Encoding.UTF8.GetString(header);
                 var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
                 var headers = split.Where(
