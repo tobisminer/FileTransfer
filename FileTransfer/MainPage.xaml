@@ -14,7 +14,7 @@
             >
             <Grid>
                 <ImageButton x:Name="ThemeBtn" Source="sun.png" Clicked="ThemeBtn_OnClicked" HeightRequest="24" WidthRequest="24" HorizontalOptions="End" Grid.Column="1"></ImageButton>
-                <Button x:Name="SwitchBtn" Text="Switch to Server" Clicked="ServerCreateBtn_Click" HorizontalOptions="End" Grid.Column="2"></Button>
+                <Button x:Name="SwitchBtn" Text="Switch to Receiver" Clicked="SwitchBtn_Click" HorizontalOptions="End" Grid.Column="2"></Button>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -22,21 +22,24 @@
                 </Grid.ColumnDefinitions>
             </Grid>
 
-            <Label x:Name="Header" Text="File Client" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label x:Name="Header" Text="File Sender" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
             
             <Grid ClassId="Server" IsVisible="False">
                 <Label  FontSize="17" FontAutoScalingEnabled="False">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Use this if you want to " FontSize="17"/>
+                            <Span Text="Use this if you want to "/>
                             <Span Text="receive " FontAttributes="Bold" />
                             <Span Text="file from other device!"/>
                         </FormattedString>
                     </Label.FormattedText>
 
                 </Label>
-                <ProgressBar x:Name="ProgressServer" ProgressColor="Green" Progress="0" Grid.Column="1" HeightRequest="25"></ProgressBar>
+
+                <Label Grid.Column="1" HorizontalOptions="End" FontSize="17" Text="Progress of current file:"></Label>
+                <ProgressBar x:Name="ProgressServer" x:FieldModifier="public" ProgressColor="Green" Progress="0" Grid.Column="2"></ProgressBar>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -44,19 +47,20 @@
 
 
             <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
-            <Entry x:Name="ServerIpAddress" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
-            <Label Text="Default save directory (leave blank if you want to save each file elsewhere)" ClassId="Server" IsVisible="False" ></Label>
+            <Entry x:Name="ServerIpAddress" x:FieldModifier="public" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
+            <Grid ClassId="Server" IsVisible="False">
+                <Label HorizontalOptions="Start" VerticalOptions="Center"  Text="Default save directory (leave blank if you want to save each file elsewhere)"></Label>
+                <Button Grid.Column="1" x:Name="DirectoryBtn" HorizontalOptions="Start" Text="Select directory" Clicked="DirectoryBtn_OnClicked"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+            
             <Entry x:Name="DefaultDirectory" Placeholder="Save directory" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
-            <Button
-            x:Name="DirectoryBtn"
-            Text="Select directory"
-            Clicked="DirectoryBtn_OnClicked"
-            HorizontalOptions="Start" 
-            ClassId="Server"
-            IsVisible="False"
-            />
+            
             <Label Text="Server log:" ClassId="Server" IsVisible="False" ></Label>
-            <ListView x:Name="ServerLogView" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
+            <ListView x:Name="ServerLogView" x:FieldModifier="public" ClassId="Server" IsVisible="False" ItemsSource="{Binding Logs}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -70,8 +74,8 @@
 
 
             <Grid ClassId="Client">
-                <Label FontAutoScalingEnabled="False" ClassId="Client">
-                    <Label.FormattedText>
+                <Label FontAutoScalingEnabled="False" FontSize="17" ClassId="Client">
+                    <Label.FormattedText >
                         <FormattedString>
                             <Span Text="IP address to "/>
                             <Span Text="send " FontAttributes="Bold" />
@@ -86,8 +90,6 @@
                 </Grid.ColumnDefinitions>
 
             </Grid>
-            
-
             
             <Entry x:Name="IpAddress" Placeholder="IP address" ClassId="Client" ></Entry>
             <Button
