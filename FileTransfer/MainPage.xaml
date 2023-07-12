@@ -14,7 +14,7 @@
             >
             <Grid>
                 <Label Grid.Column="0" HorizontalOptions="Start" FontSize="17" Text="Progress:"></Label>
-                <ProgressBar x:Name="ProgressFile" x:FieldModifier="public" ProgressColor="Orange" HeightRequest="50" Progress="0" Grid.Column="0"></ProgressBar>
+                <ProgressBar x:Name="ProgressFile" x:FieldModifier="public" ProgressColor="Orange" BackgroundColor="Gray" HeightRequest="50" Progress="0" Grid.Column="0"></ProgressBar>
                 <ImageButton x:Name="ThemeBtn" Source="sun.png" Clicked="ThemeBtn_OnClicked" HeightRequest="24" WidthRequest="24" HorizontalOptions="End" Grid.Column="1"></ImageButton>
                 <Button x:Name="SwitchBtn" Text="Switch to Receiver" Clicked="SwitchBtn_Click" HorizontalOptions="End" Grid.Column="2"></Button>
                 <Grid.ColumnDefinitions>
