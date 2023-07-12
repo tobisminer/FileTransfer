@@ -12,10 +12,8 @@ namespace FileTransfer
         private readonly MainPage Page;
         public Client(MainPage page)
         {
-            this.Page = page;
+            Page = page;
         }
-
-
         public async Task SendFile(Stream stream, string fileName, string IPadress, int Port)
         {
             try
@@ -35,11 +33,15 @@ namespace FileTransfer
                 Array.Copy(Encoding.UTF8.GetBytes(headerStr), header, Encoding.UTF8.GetBytes(headerStr).Length);
 
                 await client.SendAsync(header);
+                var sizeSent = 0;
                 for (var i = 0; i < bufferCount; i++)
                 {
                     var buffer = new byte[bufferSize];
                     var size = await stream.ReadAsync(buffer.AsMemory(0, bufferSize));
-
+                    sizeSent += size;
+                    //calculate the progress out of 100
+                    var progress = ((double)sizeSent / (double)stream.Length * 100);
+                    Page.ProgressFile.Progress = progress;
                     await client.SendAsync(buffer);
                 }
 

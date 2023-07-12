@@ -13,19 +13,20 @@
             x:Name="MainLayout"
             >
             <Grid>
+                <Label Grid.Column="0" HorizontalOptions="Start" FontSize="17" Text="Progress:"></Label>
+                <ProgressBar x:Name="ProgressFile" x:FieldModifier="public" ProgressColor="Orange" HeightRequest="50" Progress="0" Grid.Column="0"></ProgressBar>
                 <ImageButton x:Name="ThemeBtn" Source="sun.png" Clicked="ThemeBtn_OnClicked" HeightRequest="24" WidthRequest="24" HorizontalOptions="End" Grid.Column="1"></ImageButton>
                 <Button x:Name="SwitchBtn" Text="Switch to Receiver" Clicked="SwitchBtn_Click" HorizontalOptions="End" Grid.Column="2"></Button>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="175"/>
                 </Grid.ColumnDefinitions>
             </Grid>
 
             <Label x:Name="Header" Text="File Sender" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" />
             
-            <Grid ClassId="Server" IsVisible="False">
-                <Label  FontSize="17" FontAutoScalingEnabled="False">
+            <Label  ClassId="Server" IsVisible="False" FontSize="17" FontAutoScalingEnabled="False">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="Use this if you want to "/>
@@ -35,16 +36,7 @@
                     </Label.FormattedText>
 
                 </Label>
-
-                <Label Grid.Column="1" HorizontalOptions="End" FontSize="17" Text="Progress of current file:"></Label>
-                <ProgressBar x:Name="ProgressServer" x:FieldModifier="public" ProgressColor="Green" Progress="0" Grid.Column="2"></ProgressBar>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-            </Grid>
-
+            
 
             <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
             <Entry x:Name="ServerIpAddress" x:FieldModifier="public" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
@@ -83,7 +75,6 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <ProgressBar x:Name="ProgressClient" ProgressColor="Orange"  ClassId="Client" Progress="0" Grid.Column="1" HeightRequest="10"></ProgressBar>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="350"/>
                     <ColumnDefinition Width="*"/>

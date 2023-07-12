@@ -36,7 +36,7 @@ namespace FileTransfer
                     var socket = await _listener.AcceptSocketAsync();
                     watch.Restart();
                     CreateNewLog($"Client connected! With IP {socket.RemoteEndPoint}");
-                    Page.ProgressServer.Progress = 0;
+                    Page.ProgressFile.Progress = 0;
                     const int bufferSize = 1024;
                     var header = new byte[bufferSize];
                     await socket.ReceiveAsync(header);
@@ -48,25 +48,25 @@ namespace FileTransfer
                         s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
 
                     var fileSize = Convert.ToInt32(headers["Content-length"]);
-                    var fileSizeProgress = fileSize;
                     var filename = headers["Filename"];
                     CreateNewLog($"File name: {filename}");
                     CreateNewLog($"File size: {Utils.SizeSuffix(fileSize, 3)}");
                     var memoryStream = new MemoryStream(); //TODO: Fix big memory allocation*/
 
                     var lastProgress = 0D;
+                    var fileSizeCopy = fileSize;
 
-                    while (fileSize > 0)
+                    while (fileSizeCopy > 0)
                     {
                         var buffer = new byte[bufferSize];
                         var size = await socket.ReceiveAsync(buffer, SocketFlags.None);
                         await memoryStream.WriteAsync(buffer.AsMemory(0, size));
-                        fileSize -= size;
+                        fileSizeCopy -= size;
                         //calculate progress
-                        var progress = memoryStream.Length / fileSizeProgress;
+                        var progress = (memoryStream.Length + 0.0) / fileSize;
                         if (!(progress - lastProgress > 0.05)) continue;
                         lastProgress = progress;
-                        Page.ProgressServer.Progress = progress;
+                        Page.ProgressFile.Progress = progress;
 
 
                     }
@@ -89,6 +89,7 @@ namespace FileTransfer
                     memoryStream.Close();
                     socket.Dispose();
                     watch.Stop();
+                    Page.ProgressFile.Progress = 0;
                     CreateNewLog($"File transferred in {watch.ElapsedMilliseconds} ms");
                     CreateNewLog($"File saved to {resultPath}");
                     CreateNewLog("---------File transfer done!---------");
@@ -105,7 +106,7 @@ namespace FileTransfer
             _listener.Stop();
             _listener.Server.Close();
             _isServerRunning = false;
-            Page.ProgressServer.Progress = 0;
+            Page.ProgressFile.Progress = 0;
         }
         public void CreateNewLog(string message)
         {
