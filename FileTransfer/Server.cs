@@ -60,7 +60,7 @@ namespace FileTransfer
                         await memoryStream.WriteAsync(buffer.AsMemory(0, size));
                         fileSizeCopy -= size;
                         //calculate progress
-                        var progress = (memoryStream.Length + 0.0) / fileSize;
+                        var progress = (double)memoryStream.Length / fileSize;
                         Utils.UpdateProgress(Page, progress);
                     }
                     string resultPath;
