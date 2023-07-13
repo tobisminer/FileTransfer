@@ -39,9 +39,8 @@ namespace FileTransfer
                     var buffer = new byte[bufferSize];
                     var size = await stream.ReadAsync(buffer.AsMemory(0, bufferSize));
                     sizeSent += size;
-                    //calculate the progress out of 100
-                    var progress = ((double)sizeSent / (double)stream.Length * 100);
-                    Page.ProgressFile.Progress = progress;
+                    var progress = ((double)sizeSent / (double)stream.Length);
+                    Utils.UpdateProgress(Page, progress);
                     await client.SendAsync(buffer);
                 }
 

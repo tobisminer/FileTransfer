@@ -33,6 +33,15 @@ public static class Utils
         var adjustedSize = Math.Round(value / Math.Pow(1024, mag), decimalPlaces);
         return $"{adjustedSize} " + (addSuffix ? SizeSuffixes[mag] : "");
     }
+    private static int lastTime = default;
+    public static void UpdateProgress(MainPage page, double progress)
+    {
+        if (Math.Abs(lastTime - DateTime.Now.Millisecond) > 100)
+        {
+            lastTime = DateTime.Now.Millisecond;
+            page.ProgressFile.Progress = progress;
+        }
+
 
     public static async void MakeToast(string message)
     {

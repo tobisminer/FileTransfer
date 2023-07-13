@@ -64,11 +64,7 @@ namespace FileTransfer
                         fileSizeCopy -= size;
                         //calculate progress
                         var progress = (memoryStream.Length + 0.0) / fileSize;
-                        if (!(progress - lastProgress > 0.05)) continue;
-                        lastProgress = progress;
-                        Page.ProgressFile.Progress = progress;
-
-
+                        Utils.UpdateProgress(Page, progress);
                     }
                     string resultPath;
                     if (defaultDirectory is null or "")
