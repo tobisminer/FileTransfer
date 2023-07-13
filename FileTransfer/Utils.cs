@@ -14,7 +14,6 @@ public static class Utils
     {
         public string FileName { get; set; }
         public string FileSize { get; set; }
-        public string Progress { get; set; }
     }
 
     public class Log
@@ -23,6 +22,7 @@ public static class Utils
     }
 
     public static CancellationToken CancellationToken = new CancellationTokenSource().Token;
+
 
     private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB" };
 
@@ -43,6 +43,7 @@ public static class Utils
         }
 
 
+    }
     public static async void MakeToast(string message)
     {
         var toast = Toast.Make(message);

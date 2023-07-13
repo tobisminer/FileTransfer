@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Maui.Storage;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
+
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FileTransfer
 {
@@ -20,7 +17,7 @@ namespace FileTransfer
         {
             this.Page = page;
         }
-        
+
         public async void CreateServer()
         {
             var ipAddress = Utils.GetIPAdress();

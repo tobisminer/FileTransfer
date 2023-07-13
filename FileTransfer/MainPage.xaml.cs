@@ -1,11 +1,5 @@
 ﻿using CommunityToolkit.Maui.Storage;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System;
-using System.IO.MemoryMappedFiles;
 
 namespace FileTransfer;
 
@@ -95,7 +89,7 @@ public partial class MainPage : ContentPage
             return;
         }
         Preferences.Default.Set("IPAddress", ip);
-        
+
         foreach (var file in _selectedFiles)
         {
             var stream = await file.OpenReadAsync();
@@ -107,9 +101,9 @@ public partial class MainPage : ContentPage
     #endregion
 
     #region Server
-    
 
-   
+
+
     private void SwitchBtn_Click(object sender, EventArgs e)
     {
         MainLayout.Children.ToList().ForEach(x =>
@@ -138,7 +132,7 @@ public partial class MainPage : ContentPage
             server.StopServer();
         }
     }
-    
+
     private async void DirectoryBtn_OnClicked(object sender, EventArgs e)
     {
         var folder = await FolderPicker.Default.PickAsync(Utils.CancellationToken);
@@ -148,12 +142,12 @@ public partial class MainPage : ContentPage
         server.defaultDirectory = path;
     }
 
-    
+
 
     #endregion
 
-    
 
 
-   
+
+
 }

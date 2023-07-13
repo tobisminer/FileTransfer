@@ -36,7 +36,6 @@
                     </Label.FormattedText>
 
                 </Label>
-            
 
             <Label Text="IP address of this device" ClassId="Server" IsVisible="False" ></Label>
             <Entry x:Name="ServerIpAddress" x:FieldModifier="public" Placeholder="IP address" ClassId="Server" IsVisible="False" IsReadOnly="True"></Entry>
